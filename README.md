@@ -2603,6 +2603,10 @@ alert(numbers.sort(sortNumber)); // array, [20,10,9,8,7,6,5,4,3,2,1]
 
 다음 코드는 일반적인 환경에서는 작동하지 않고 서버 환경에서만 동작한다. 동영상을 참고한다.
 
+Ajax
+
+asynchronous javascript and xml (비동기)
+
 datasource.json.js
 ```
 {"title":"JavaScript","author":"egoing"}
