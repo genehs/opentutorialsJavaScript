@@ -3325,3 +3325,149 @@ ECMAScript에서는 전역객체의 API를 정의해두었다.
 이를테면 웹브라우저 자바스크립트에서는 alert()이라는 전역객체의 메소드가 존재하지만 node.js에는 존재하지 않는다. 
 
 또한 전역객체의 이름도 호스트환경에 따라서 다른데, 웹브라우저에서 전역객체는 window이지만 node.js에서는 global이다. 
+
+**this**
+
+this는 함수 내에서 함수 호출 맥락(context)를 의미한다. 
+
+맥락이라는 것은 상황에 따라서 달라진다는 의미인데 즉 함수를 어떻게 호출하느냐에 따라서 this가 가리키는 대상이 달라진다는 뜻이다. 
+
+함수와 객체의 관계가 느슨한 자바스크립트에서 this는 이 둘을 연결시켜주는 실질적인 연결점의 역할을 한다.
+
+**함수호출**
+
+함수를 호출했을 때 this는 무엇을 가르키는지 살펴보자. this는 전역객체인 window와 같다.
+
+```
+function func(){
+    if(window === this){
+        document.write("window === this");
+    }
+}
+func(); 
+```
+
+결과 
+
+```
+window === this
+```
+
+**메소드의 호출**
+
+객체의 소속인 메소드의 this는 그 객체를 가르킨다. 
+
+```
+var o = {
+    func : function(){
+        if(o === this){
+            document.write("o === this");
+        }
+    }
+}
+o.func();   
+```
+
+결과
+
+```
+o === this
+```
+
+**생성자의 호출**
+
+아래 코드는 함수를 호출했을 때와 new를 이용해서 생성자를 호출했을 때의 차이를 보여준다.
+
+```
+var funcThis = null; 
+ 
+function Func(){
+    funcThis = this;
+}
+
+// 일반함수. 
+var o1 = Func();
+if(funcThis === window){
+    document.write('window <br />');
+}
+
+// 생성자. 
+var o2 = new Func();
+if(funcThis === o2){
+    document.write('o2 <br />');
+}
+```
+결과
+
+```
+window 
+o2
+```
+
+생성자는 빈 객체를 만든다. 
+
+그리고 이 객체내에서 this는 만들어진 객체를 가르킨다. 
+
+이것은 매우 중요한 사실이다. 
+
+생성자가 실행되기 전까지는 객체는 변수에도 할당될 수 없기 때문에 this가 아니면 객체에 대한 어떠한 작업을 할 수 없기 때문이다. 
+
+
+```
+function Func(){
+    document.write(o);
+}
+var o = new Func();
+```
+결과는 아래와 같다.
+
+```
+undefined
+```
+
+**apply, call**
+
+```
+function func(x,y) { return x+y }  // 함수 리터럴
+//var sum2 = new Function('x','y','return x+y;'); 위와 같음.
+
+var o = {};       // 객체 리터럴 
+var a = [1,2,3];  // 배열 리터럴 
+```
+
+함수의 메소드인 apply, call을 이용하면 this의 값을 제어할 수 있다. 
+
+```
+var o = {}
+var p = {}
+function func(){
+    switch(this){
+        case o:
+            document.write('o<br />');
+            break;
+        case p:
+            document.write('p<br />');
+            break;
+        case window:
+            document.write('window<br />');
+            break;          
+    }
+}
+func();
+func.apply(o);
+func.apply(p);
+```
+
+결과
+
+```
+window
+o
+p
+```
+
+전통적인 객체지향에서 메소드는 객체에 강하게 포함되있음..(객체- 주인 (master) 메소드 - 노예(slave))
+
+하지만 자바스크립트는 그렇지 않지.. 자바스크립트는 참 유연하네.. 객체랑 함수는 대등..
+
+this는 변화무쌍하다.. 누구의 소속이냐에 따라 달라짐.
